@@ -3,9 +3,12 @@ package Donne;
 import Main.Contour;
 import Main.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.scene.control.Alert;
+import org.geojson.Feature;
+import org.geojson.FeatureCollection;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -13,16 +16,13 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
-import javafx.scene.control.Alert;
-import org.geojson.Feature;
-import org.geojson.FeatureCollection;
+import java.util.List;
 
 
 public class Departement {
-    private static FeatureCollection featureCollection;
     private static final String lien = "https://france-geojson.gregoiredavid.fr/repo/departements.geojson";
    
-    //J'utilise un dictionnaire pour facilement accéder à chaque département (nom -> Contour)
+    //J'utilise un dictionnaire pour facilement accéder à chaque département (nom -> Contour).
     private static final Hashtable<String, Contour> depdic = new Hashtable();
    
     // j'utilise un dictionnaire qui à chaque code de région renvoie la liste des codes de ses départements 
@@ -40,28 +40,28 @@ public class Departement {
        put("76", new ArrayList<>(Arrays.asList("09", "11", "12", "30", "31", "32","34", "46", "48", "65", "66", "81", "82")));
        put("52", new ArrayList<>(Arrays.asList("44", "49", "53", "72", "85")));
        put("93", new ArrayList<>(Arrays.asList("04", "05", "06", "13", "83", "84")));
-       put("1", new ArrayList<>(Arrays.asList("971")));
-       put("2", new ArrayList<>(Arrays.asList("972")));
-       put("3", new ArrayList<>(Arrays.asList("973")));
-       put("4", new ArrayList<>(Arrays.asList("974")));
-       put("5", new ArrayList<>(Arrays.asList("976")));
+       put("1", new ArrayList<>(List.of("971")));
+       put("2", new ArrayList<>(List.of("972")));
+       put("3", new ArrayList<>(List.of("973")));
+       put("4", new ArrayList<>(List.of("974")));
+       put("5", new ArrayList<>(List.of("976")));
    }};
    
     //j'utilise un dictionnaire pour renvoyer le nom d'un département à partir de son code
     public static final Hashtable<String, String> codeVersString = new Hashtable(); // CODE_VERS_STRING
     public static final Hashtable<String, String> stringVersCode = new Hashtable();
     
-    public static void init() throws MalformedURLException, IOException {
+    public static void init() throws IOException {
         String jsonString;
         try {
-            //je défini l'input stream correspondant
+            //je définis l'input stream correspondant
             URL url = new URL(lien);
             InputStream is = url.openStream();
             jsonString = new String(is.readAllBytes(), StandardCharsets.UTF_8);
             is.close();
             
         } catch (IOException e) {
-            //je défini l'input stream correspondant
+            //je définis l'input stream correspondant
             jsonString = Files.readString(Path.of("departements.geojson"));
             
             //j'affiche un message d'erreur si les données ne peuvent pas être récupérée en ligne
@@ -77,14 +77,14 @@ public class Departement {
         // def ObjectMapper
         ObjectMapper mapper = new ObjectMapper();
         // Transformer le String en un objet FeatureCollection
-        featureCollection = mapper.readValue(jsonString, FeatureCollection.class);
+        FeatureCollection featureCollection = mapper.readValue(jsonString, FeatureCollection.class);
         
         
         // Complétion de depdic
             for (Feature feature : featureCollection.getFeatures()) {
                 depdic.put(Utils.simplify(feature.getProperty("nom")), new Contour(feature));
-                codeVersString.put((String) feature.getProperty("code"), Utils.simplify(feature.getProperty("nom")));
-                stringVersCode.put(Utils.simplify(feature.getProperty("nom")), (String) feature.getProperty("code"));
+                codeVersString.put(feature.getProperty("code"), Utils.simplify(feature.getProperty("nom")));
+                stringVersCode.put(Utils.simplify(feature.getProperty("nom")), feature.getProperty("code"));
         }
     }
 

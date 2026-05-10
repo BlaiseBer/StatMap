@@ -2,8 +2,6 @@ package requetes;
 
 import Donne.Stat;
 import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.shape.Shape;
 
 public abstract class Requete {
     String stat;
@@ -13,5 +11,5 @@ public abstract class Requete {
     
     Requete() {}
     
-    public void executer() throws Exception {}
+    public void executer() {}
 }

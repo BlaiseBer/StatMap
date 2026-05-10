@@ -1,15 +1,16 @@
 package requetes;
 
-import javafx.scene.paint.Color;
-import Main.Contour;
-import Donne.Stat;
-import Main.Fenetre;
 import Donne.Region;
-import static Main.Fenetre.pix;
-import java.io.IOException;
-import java.net.MalformedURLException;
+import Donne.Stat;
+import Main.Contour;
+import Main.Fenetre;
 import javafx.scene.Group;
+import javafx.scene.paint.Color;
 import javafx.scene.transform.Scale;
+
+import java.io.IOException;
+
+import static Main.Fenetre.pix;
 
 public class RNation extends Requete {
     public RNation() {
@@ -18,7 +19,7 @@ public class RNation extends Requete {
         this.groupe = new Group();
     }
     
-    public RNation(String stat) throws MalformedURLException, IOException {
+    public RNation(String stat) throws IOException {
         super();
         this.stat = stat;
         this.donnees = new Stat(stat, "NAT", null);
@@ -30,7 +31,7 @@ public class RNation extends Requete {
         Fenetre.sp.getChildren().clear();
         double centrey = 46.763060*1.4;
         double centrex = 2;
-        double scale = pix/14;
+        double scale = pix/14.;
         
         groupe.getTransforms().clear();
         groupe.getChildren().clear();
@@ -50,12 +51,12 @@ public class RNation extends Requete {
             if (stat==null) {
                 region.getForme().setFill(Color.WHITE);
                 
-            //dans le reste des cas on colorie selon les informations données par l'objet donnees
+            //dans le reste des cas, on colorie selon les informations données par l'objet donnees
             } else {
                 region.getForme().setFill(donnees.getCouleur(region.getCode()));
             }
            
-             // je définie les évènements à exécuter lors que l'on passe sur la region avec la souris
+             // je définis les évènements à exécuter lors que l'on passe sur la region avec la souris
             region.getForme().setOnMouseEntered(e -> {
                 region.getForme().setStroke(Color.BLACK);
                 Fenetre.nomzone.setText(region.getNom());

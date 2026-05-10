@@ -1,14 +1,14 @@
 package Donne;
 
 import Main.Fenetre;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.scene.paint.Color;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import javafx.scene.paint.Color;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import com.fasterxml.jackson.databind.JsonNode;
-import java.io.InputStream;
 import java.util.Hashtable;
 
 
@@ -19,7 +19,7 @@ public class Stat {
     Hashtable<String, Double> taux = new Hashtable();
     Hashtable<String, Double> coef = new Hashtable();
     
-    private JsonNode getJson(String surl) throws MalformedURLException, IOException{
+    private JsonNode getJson(String surl) throws IOException{
         
         URL url = new URL(surl);
         JsonNode donnee = null;
@@ -42,7 +42,7 @@ public class Stat {
         
     
     
-    public Stat(String stat, String zone, String codezone) throws MalformedURLException, IOException {
+    public Stat(String stat, String zone, String codezone) throws IOException {
         //def variables de base
         this.stat = stat;
         this.zone = zone;
@@ -84,32 +84,30 @@ public class Stat {
                 Hashtable<String, Double> PopActive = new Hashtable();
                     for (JsonNode commune : jsonPopActive.get("observations")) {
                         //je récupère l'identifiant utilisé par les données de l'insee
-                        String cléTot = commune.get("dimensions").get("GEO").toString();
+                        String cleTot = commune.get("dimensions").get("GEO").toString();
                         
-                        //seule la partie avec le code INSEE (le code Région, Département, ou commune) est utile ici
-                        //je coupe le reste
-                        String clé = cléTot.substring(10, cléTot.length()-1);
+                        //seule la partie avec le code INSEE (le code Région, Département, ou commune) est utile ici, je coupe le reste
+                        String cle = cleTot.substring(10, cleTot.length()-1);
                         
                         // je récupère la donnée observée
                         Double  value = commune.get("measures").get("OBS_VALUE_NIVEAU").get("value").asDouble();
-                        PopActive.put(clé, value);
+                        PopActive.put(cle, value);
                     }
                     
                     for (JsonNode commune : jsonChomage.get("observations")) {
                         //je récupère l'identifiant utilisé par les données de l'insee
-                        String cléTot = commune.get("dimensions").get("GEO").toString();
+                        String cleTot = commune.get("dimensions").get("GEO").toString();
                         
-                        //seule la partie avec le code INSEE (le code Région, Département, ou commune) est utile ici
-                        //je coupe le reste
-                        String clé = cléTot.substring(10, cléTot.length()-1);
+                        //seule la partie avec le code INSEE (le code Région, Département, ou commune) est utile ici, je coupe le reste
+                        String cle = cleTot.substring(10, cleTot.length()-1);
                         
                         // je récupère la donnée observée
                         Double  nbChomeur = commune.get("measures").get("OBS_VALUE_NIVEAU").get("value").asDouble();
                         //je calcule la pop active
-                        if (PopActive.get(clé) != null && PopActive.get(clé) != 0) {
-                                taux.put(clé, nbChomeur/PopActive.get(clé));
+                        if (PopActive.get(cle) != null && PopActive.get(cle) != 0) {
+                                taux.put(cle, nbChomeur/PopActive.get(cle));
                     } else {
-                            taux.put(clé, -1.0);
+                            taux.put(cle, -1.0);
                         }
                     }
                 
@@ -128,7 +126,7 @@ public class Stat {
             }
         }
         
-        //Normalisation (de 0.3 à 0.9 pour  éviter que certaines zones soient trop sombres ou trop claires)
+        //Normalisation (de 0.3 à 0.9 pour éviter que certaines zones soient trop sombres ou trop claires)
         for (String commune : taux.keySet()) {
             if (taux.get(commune) != -1.0 && taux.get(commune) != null) {
                 coef.put(commune, 0.9 + (taux.get(commune)-min) * ((0.3-0.9)/(max-min)));
@@ -146,7 +144,7 @@ public class Stat {
     
     public Color getCouleur(String codeSousZone) {
         
-        //je gère d'abord la situation on la valeur n'a pas été évaluée pour une zone
+        //je gère d'abord la situation dans laquelle la valeur n'a pas été évaluée pour une zone
         if ((coef.get(codeSousZone) == null) || (coef.get(codeSousZone) == -1.0)) {
             //la couleur pour les zones pour lesquels il n'y a aucune données est grise
             return Color.LIGHTGREY;

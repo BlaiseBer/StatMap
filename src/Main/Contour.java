@@ -25,23 +25,19 @@ public class Contour {
             
         if (geometry instanceof Polygon) {
             // Un polygon est une liste de liste de points.
-            // le premier élément de la liste forme le Polygone extérieur.
-            // les éléments suivants forment les "trous" c'est-à-dire les polygones qui doivent 
-            // être soustraient au polygone extérieur
+            // Le premier élément de la liste forme le Polygone extérieur.
+            // Les éléments suivants forment les "trous" c'est-à-dire les polygones qui doivent être soustraits au polygone extérieur
                 
 
             Polygon polygon = (Polygon) geometry;
             List<List<LngLatAlt>> rings = polygon.getCoordinates(); // rings est la liste des polygones
                 
             //j'initialise sforme avec le polygone extérieur
-            sforme = convertir(rings.get(0));
+            sforme = convertir(rings.getFirst());
                 
             for (List<LngLatAlt> poly : rings) {
-                if (poly.equals(rings.get(0))) {
-                    //je saute le polygone extérieur
-                    continue;
-                } else {
-                    //je soustrait chaque polygone successif à sforme
+                if (!poly.equals(rings.getFirst())) {
+                    //je soustrais chaque polygone successif à sforme
                     sforme = Shape.subtract(sforme, convertir(poly));
                 }
             }
@@ -55,12 +51,9 @@ public class Contour {
             // On répète donc les mêmes opérations sur toute la liste
                 
             for (List<List<LngLatAlt>> rings : multipolygon.getCoordinates())  {
-                forme = convertir(rings.get(0));
+                forme = convertir(rings.getFirst());
                 for (List<LngLatAlt> poly : rings) {
-                    if (poly.equals(rings.get(0))) {
-                        //je saute le polygone extérieur
-
-                    } else {
+                    if (!poly.equals(rings.getFirst())) {
                         forme = Shape.subtract(forme, convertir(poly));
                     }
                 }
@@ -115,6 +108,6 @@ public class Contour {
         Bounds bound = forme.getLayoutBounds();
         double a = bound.getWidth();
         double b = bound.getHeight();
-        if (b<a) {return a;} else {return b;}
+        return Math.max(b, a);
     }
 }

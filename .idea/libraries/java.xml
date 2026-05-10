@@ -10,5 +10,9 @@
     </CLASSES>
     <JAVADOC />
     <SOURCES />
+    <excluded>
+      <root url="file://$PROJECT_DIR$/main/openjfx-21.0.11_windows-x64_bin-sdk/javafx-sdk-21.0.11/lib" />
+    </excluded>
+    <jarDirectory url="file://$PROJECT_DIR$/main/openjfx-21.0.11_windows-x64_bin-sdk/javafx-sdk-21.0.11/lib" recursive="false" />
   </library>
 </component>

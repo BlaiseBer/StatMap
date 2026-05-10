@@ -1,22 +1,23 @@
 package requetes;
 
-import java.io.IOException;
-import javafx.scene.paint.Color;
 import Donne.Commune;
-import Main.Contour;
 import Donne.Departement;
 import Donne.Stat;
+import Main.Contour;
 import Main.Fenetre;
-import static Main.Fenetre.pix;
 import Main.Utils;
-import java.net.MalformedURLException;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
+import javafx.scene.paint.Color;
 import javafx.scene.transform.Scale;
+
+import java.io.IOException;
+
+import static Main.Fenetre.pix;
 
 public class RDepartement extends Requete {
     
-    public RDepartement(String stat, String zone) throws MalformedURLException, IOException {
+    public RDepartement(String stat, String zone) throws IOException {
         super();
         this.stat = stat;
         this.zone = Utils.simplify(zone);
@@ -40,16 +41,15 @@ public class RDepartement extends Requete {
             groupe.getChildren().add(commune.getForme());
             
         }
-        
-        double maxlong;
+
         groupe.layout();
 
         Bounds bound = groupe.getLayoutBounds();
         double a = bound.getWidth();
         double b = bound.getHeight();
-        if (b<a) {maxlong= a;} else {maxlong =b;}
-        
-        
+        double maxlong = Math.max(b, a);
+
+
         Fenetre.sp.getChildren().clear();
         double centrey = forme.getCentre().getY();
         double centrex = forme.getCentre().getX();
@@ -61,7 +61,7 @@ public class RDepartement extends Requete {
             commune.getForme().setStroke(Color.GREY);
             commune.getForme().setStrokeWidth(pix/(scale*700));
             
-            // je défini les évènements à exécuter lorsque l'on passe sur la zone avec la souris
+            // je définis les évènements à exécuter lorsque l'on passe sur la zone avec la souris
             commune.getForme().setOnMouseEntered(e -> {
                 commune.getForme().setStroke(Color.BLACK);
                 Fenetre.nomzone.setText(commune.getNom());

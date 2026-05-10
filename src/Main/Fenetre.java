@@ -1,46 +1,39 @@
 package Main;
 
-import requetes.*;
-import Donne.*;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.io.IOException;
+import Donne.Commune;
+import Donne.Departement;
+import Donne.Region;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.image.Image;
+import requetes.RDepartement;
+import requetes.RNation;
+import requetes.RRegion;
+import requetes.Requete;
+
+import java.awt.*;
+import java.io.IOException;
 
 public class Fenetre {
-    private Stage st;
     public static int pix;
     public static int piy;
     public static StackPane sp;
-    private static Color color = Color.LIGHTBLUE;
+    private static final Color color = Color.LIGHTBLUE;
     public Requete requete;
     
-    //importation de l'icone de la fenêtre
+    //importation de l'image de la fenêtre
     Image icon = new Image(getClass().getResourceAsStream("/icon/logo.png"));
     
-    //Création de deux labels pour affiché le nom et la valeur de la zone pointée. Ils devront être accédé depuis une autre classe
+    //Création de deux labels pour afficher le nom et la valeur de la zone pointée. Ils devront être accédé depuis une autre classe
     public static Label nomzone = new Label("");
     public static Label valzone = new Label("");
     
@@ -48,10 +41,9 @@ public class Fenetre {
         return color;
     }
     
-    public Fenetre(Stage stage) throws Exception {
-        st=stage;
+    public Fenetre(Stage stage) {
 
-        //Initialisation des contours de chaque zones géographiques
+        //Initialisation des contours de chaque zone géographique
         try {
             Departement.init();
             Commune.init();
@@ -68,7 +60,7 @@ public class Fenetre {
             alert.showAndWait();
             }
 
-        //calcul du nombre de pixel de hauteur et de largeur nécessaire (le programme s'assure que la fenêtre tient bien sur l'écran de l'utilisateur).
+        //calcul du nombre de pixels de hauteur et de largeur nécessaire (le programme s'assure que la fenêtre tient bien sur l'écran de l'utilisateur).
         Dimension ssize = Toolkit.getDefaultToolkit().getScreenSize();
         if (ssize.getHeight()>= ssize.getWidth()) {
             piy = (int) ssize.getWidth(); 
@@ -122,26 +114,24 @@ public class Fenetre {
             lzone.setVisible(true); tf.setVisible(true);
         });
         
-        //    Définition du bouton valider
+        //    Définition du bouton validé
         Button valid = new Button("Valider");
         valid.setOnAction(
-            new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent e) {
+                e -> {
                     try {
-                        // je dissocie chaque cas (en fonction de la case cochée)
+                        // je dissocie chaque cas (en fonction de la case cochée).
                         if (rb1.isSelected()) {
                             requete = new RNation(cb.getValue().toString());
                             requete.executer();
                         } else if (rb2.isSelected()) {
                             requete = new RRegion(cb.getValue().toString(), tf.getText());
                             requete.executer();
-                        
+
                         } else {
                             requete = new RDepartement(cb.getValue().toString(), tf.getText());
                             requete.executer();
                         }
-                
+
                     } catch (Exception d) {
                         d.printStackTrace(System.out);
                         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -149,12 +139,10 @@ public class Fenetre {
                         alert.setHeaderText("Nom non reconnu");
                         alert.setContentText("Le nom de la zone géographique n'a pas été reconnu. Vérifier que vous n'avez pas fait d'erreur de frappes et vérifier votre connection internet.");
                         alert.showAndWait();
-            
-                        
+
+
                     }
                 }
-        
-            }   
         );
                 
         //def de la VBox (à droite)
@@ -162,14 +150,14 @@ public class Fenetre {
         vb.setAlignment(Pos.CENTER);
         vb.setBorder( new Border(new BorderStroke(Color.GREY,BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5))));
         vb.getChildren().addAll(ldef, cb, lreg, vbradio, lzone, tf, valid, nomzone, valzone); //ajout des Nodes
-        VBox.setMargin(vbradio, new Insets(1, 0, 1, pix/5));
-        vb.setPrefSize(pix/2, pix);
+        VBox.setMargin(vbradio, new Insets(1, 0, 1, pix/5.));
+        vb.setPrefSize(pix/2., pix);
         
         
         //def StackPane pour la carte
         StackPane sp = new StackPane();
         sp.setPrefSize(pix, pix);
-        this.sp = sp;
+        Fenetre.sp = sp;
         
         //def du HBox (root)
         HBox root =new HBox();
@@ -177,17 +165,17 @@ public class Fenetre {
          
          //def de la scène
         Scene scene=new Scene(root, piy, pix);
-        st.setScene(scene);
+        stage.setScene(scene);
         //paramètres de la fenêtre
-        st.setResizable(false); //Les dimensions de la fenêtre doivent être conservée.
-        st.setTitle("MapStat");
-        st.getIcons().add(icon);
+        stage.setResizable(false); //Les dimensions de la fenêtre doivent être conservée.
+        stage.setTitle("MapStat");
+        stage.getIcons().add(icon);
         
             
         //definition et execution de la première requête (qui affiche la carte d'accueil)
         requete = new RNation();
         requete.executer();
         
-        st.show();  
+        stage.show();
     }
 }

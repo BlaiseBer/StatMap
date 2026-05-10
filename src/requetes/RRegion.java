@@ -1,21 +1,22 @@
 package requetes;
 
-import java.io.IOException;
-import javafx.scene.paint.Color;
-import javafx.scene.Group;
-import Main.Contour;
 import Donne.Departement;
-import Donne.Stat;
-import Main.Fenetre;
 import Donne.Region;
-import static Main.Fenetre.pix;
+import Donne.Stat;
+import Main.Contour;
+import Main.Fenetre;
 import Main.Utils;
-import java.net.MalformedURLException;
+import javafx.scene.Group;
+import javafx.scene.paint.Color;
 import javafx.scene.transform.Scale;
+
+import java.io.IOException;
+
+import static Main.Fenetre.pix;
 
 public class RRegion extends Requete {
     
-    public RRegion(String stat, String zone) throws MalformedURLException, IOException {
+    public RRegion(String stat, String zone) throws IOException {
         super();
         this.stat = stat;
         this.zone = Utils.simplify(zone);
@@ -45,7 +46,7 @@ public class RRegion extends Requete {
             departement.getForme().setStroke(Color.GREY);
             departement.getForme().setStrokeWidth(pix/(scale*700));
             
-            // je défini les évènements à exécuter lors que l'on passe sur la zone avec la souris
+            // je définis les évènements à exécuter lors que l'on passe sur la zone avec la souris
             departement.getForme().setOnMouseEntered(e -> {
                 departement.getForme().setStroke(Color.BLACK);
                 Fenetre.nomzone.setText(departement.getNom());
