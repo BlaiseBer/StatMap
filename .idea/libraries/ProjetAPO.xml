@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="ProjetAPO">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/dist/ProjetAPO.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

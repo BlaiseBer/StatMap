@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="java">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/main/java/jackson-databind-2.20.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/main/java/jackson-core-2.20.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/main/java/jackson-annotations-2.20.jar!/" />
+      <root url="jar://$PROJECT_DIR$/main/java/geojson-jackson-1.14.jar!/" />
+      <root url="jar://$PROJECT_DIR$/main/java/gt-geojson-17.5.jar!/" />
+      <root url="file://$PROJECT_DIR$/main/openjfx-21.0.11_windows-x64_bin-sdk/javafx-sdk-21.0.11/lib" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
