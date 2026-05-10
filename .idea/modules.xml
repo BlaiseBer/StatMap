@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ProjetAPO.iml" filepath="$PROJECT_DIR$/ProjetAPO.iml" />
+      <module fileurl="file://$PROJECT_DIR$/StatMap.iml" filepath="$PROJECT_DIR$/StatMap.iml" />
     </modules>
   </component>
 </project>
